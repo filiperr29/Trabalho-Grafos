@@ -4,10 +4,10 @@ using System.Linq;
 
 public class ResultadoAGM
 {
-    public List<(int, int, int)> _arestas;
-    public int _custoTotal;
+    public List<(int, int, double)> _arestas;   
+    public double _custoTotal;                 
 
-    public ResultadoAGM(List<(int, int, int)> arestas, int custoTotal)
+    public ResultadoAGM(List<(int, int, double)> arestas, double custoTotal)
     {
         _arestas = arestas;
         _custoTotal = custoTotal;
@@ -20,16 +20,16 @@ public class AGMPrim
     {
         int numVertices = grafo.NumVertices;
         var novoGrafo = ConverterParaNaoDirecionado(grafo);
-        
+
         var verticesAGM = new HashSet<int>();
-        var arestasAGM = new List<(int, int, int)>();
-        int custoTotal = 0;
+        var arestasAGM = new List<(int, int, double)>();  
+        double custoTotal = 0;                            
 
         verticesAGM.Add(verticeRaiz);
 
         while (verticesAGM.Count < numVertices)
         {
-            int menorCusto = int.MaxValue;
+            double menorCusto = double.MaxValue;          
             int verticeOrigem = -1;
             int verticeDestino = -1;
 
@@ -40,8 +40,8 @@ public class AGMPrim
                     foreach (var vizinhoInfo in novoGrafo[vertice])
                     {
                         int vizinho = vizinhoInfo.Item1;
-                        int peso = vizinhoInfo.Item2;
-                        
+                        double peso = vizinhoInfo.Item2;  
+
                         if (!verticesAGM.Contains(vizinho) && peso < menorCusto)
                         {
                             menorCusto = peso;
@@ -65,14 +65,14 @@ public class AGMPrim
         return new ResultadoAGM(arestasAGM, custoTotal);
     }
 
-    private static Dictionary<int, List<(int, int)>> ConverterParaNaoDirecionado(Grafo grafo)
+    private static Dictionary<int, List<(int, double)>> ConverterParaNaoDirecionado(Grafo grafo)  
     {
-        var novoGrafo = new Dictionary<int, List<(int, int)>>();
+        var novoGrafo = new Dictionary<int, List<(int, double)>>();  
         int numVertices = grafo.NumVertices;
 
         for (int i = 0; i < numVertices; i++)
         {
-            novoGrafo[i] = new List<(int, int)>();
+            novoGrafo[i] = new List<(int, double)>();  
         }
 
         for (int origem = 0; origem < numVertices; origem++)
@@ -80,7 +80,7 @@ public class AGMPrim
             foreach (var vizinhoInfo in grafo.ObterVizinhos(origem))
             {
                 int destino = vizinhoInfo.destino;
-                int peso = vizinhoInfo.peso;
+                double peso = vizinhoInfo.peso;  
 
                 if (origem < destino)
                 {
@@ -96,14 +96,14 @@ public class AGMPrim
     public static void ExibirResultados(ResultadoAGM resultado)
     {
         Console.WriteLine("=== ÁRVORE GERADORA MÍNIMA ===");
-        Console.WriteLine($"Custo Total da Rede: R$ {resultado._custoTotal}");
+        Console.WriteLine($"Custo Total da Rede: R$ {resultado._custoTotal:F2}");  
         Console.WriteLine("Arestas da AGM:");
 
         foreach (var (origem, destino, peso) in resultado._arestas)
         {
             char hubOrigem = (char)('A' + origem);
             char hubDestino = (char)('A' + destino);
-            Console.WriteLine($"  Hub {hubOrigem} -> Hub {hubDestino} : R$ {peso}");
+            Console.WriteLine($"  Hub {hubOrigem} -> Hub {hubDestino} : R$ {peso:F2}");  
         }
         Console.WriteLine();
     }
